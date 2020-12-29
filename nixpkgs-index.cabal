@@ -67,9 +67,11 @@ library
     , string-interpolate
     , text
     , xeno
+    , transformers
 
   exposed-modules:
   other-modules:
+    Control.Effect.PooledConc
   hs-source-dirs:  src
 
 executable nixpkgs-index
