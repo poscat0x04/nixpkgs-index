@@ -1,0 +1,8 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "lib:nixpkgs-index"
+    - path: "./test"
+      component: "test:nixpkgs-index-test"
+    - path: "./app"
+      component: "exe:nixpkgs-index"

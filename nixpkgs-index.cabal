@@ -1,0 +1,92 @@
+cabal-version:   3.0
+name:            nixpkgs-index
+version:         0.1.0
+
+-- synopsis:
+-- description:
+-- category:
+license:         BSD-3-Clause
+license-file:    LICENSE
+author:          Poscat
+maintainer:      Poscat <poscat@mail.poscat.moe>
+copyright:       Copyright (c) Poscat 2020
+stability:       alpha
+homepage:        https://github.com/poscat0x04/nixpkgs-index
+bug-reports:     https://github.com/poscat0x04/nixpkgs-index/issues
+extra-doc-files:
+  CHANGELOG.md
+  README.md
+
+common common-attrs
+  build-depends:      base >=4.10 && <5
+  default-language:   Haskell2010
+  default-extensions:
+    NoStarIsType
+    BangPatterns
+    ConstraintKinds
+    DataKinds
+    DeriveFoldable
+    DeriveFunctor
+    DeriveGeneric
+    DeriveTraversable
+    DuplicateRecordFields
+    EmptyCase
+    FlexibleContexts
+    FlexibleInstances
+    FunctionalDependencies
+    InstanceSigs
+    KindSignatures
+    LambdaCase
+    MultiWayIf
+    OverloadedStrings
+    PartialTypeSignatures
+    PatternSynonyms
+    RecordWildCards
+    ScopedTypeVariables
+    TupleSections
+    TypeApplications
+    TypeFamilies
+    TypeOperators
+    UnicodeSyntax
+    ViewPatterns
+
+library
+  import:          common-attrs
+  build-depends:
+    , aeson
+    , async-pool
+    , brotli
+    , bytestring
+    , containers
+    , http-client
+    , http-client-tls
+    , in-other-words
+    , optics
+    , optparse-applicative
+    , regex-tdfa
+    , string-interpolate
+    , text
+    , xeno
+
+  exposed-modules:
+  other-modules:
+  hs-source-dirs:  src
+
+executable nixpkgs-index
+  import:         common-attrs
+  build-depends:  nixpkgs-index
+  hs-source-dirs: app
+  main-is:        Main.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+
+test-suite nixpkgs-index-test
+  import:         common-attrs
+  type:           exitcode-stdio-1.0
+  build-depends:  nixpkgs-index
+  hs-source-dirs: test
+  main-is:        Spec.hs
+  ghc-options:    -threaded -rtsopts -with-rtsopts=-N
+
+source-repository head
+  type:     git
+  location: https://github.com/poscat0x04/nixpkgs-index
