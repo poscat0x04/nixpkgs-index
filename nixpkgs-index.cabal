@@ -61,6 +61,7 @@ library
     , hashable
     , http-client
     , http-client-tls
+    , http-types
     , in-other-words
     , megaparsec
     , optics
@@ -76,6 +77,8 @@ library
     , th-lift-instances
 
   exposed-modules:
+    Distribution.Nixpkgs.Hydra
+    Distribution.Nixpkgs.Packages
     Distribution.Nixpkgs.Files
 
   other-modules:
