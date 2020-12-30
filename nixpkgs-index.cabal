@@ -58,20 +58,26 @@ library
     , brotli
     , bytestring
     , containers
+    , hashable
     , http-client
     , http-client-tls
     , in-other-words
+    , megaparsec
     , optics
     , optparse-applicative
     , regex-tdfa
+    , serialise
     , string-interpolate
     , text
-    , xeno
     , transformers
+    , xeno
+    , template-haskell
+    , th-lift-instances
 
   exposed-modules:
   other-modules:
     Control.Effect.PooledConc
+    Path
   hs-source-dirs:  src
 
 executable nixpkgs-index
