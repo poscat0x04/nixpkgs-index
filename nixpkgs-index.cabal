@@ -80,6 +80,7 @@ library
 
   other-modules:
     Control.Effect.PooledConc
+    Control.Effect.Http
     Path
   hs-source-dirs:  src
 
