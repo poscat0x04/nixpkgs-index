@@ -2,6 +2,7 @@
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE StrictData #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Distribution.Nixpkgs.Files where
 
@@ -14,6 +15,7 @@ import Data.Maybe
 import Data.String.Interpolate
 import Data.Text (Text)
 import GHC.Generics
+import Optics.TH
 import Path
 
 data FileNode t
@@ -101,3 +103,8 @@ resolveSymlink entries = map resolve entries
             let targetPath' = parent path </> p
              in fromMaybe e $ HM.lookup targetPath' index
       | otherwise = e
+
+makeFieldLabels ''FileNode
+makeFieldLabels ''FileTree
+makeFieldLabels ''FileTreeEntry
+makeFieldLabels ''FileListing

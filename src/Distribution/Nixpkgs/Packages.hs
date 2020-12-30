@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE StrictData #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 module Distribution.Nixpkgs.Packages where
 
@@ -8,6 +9,7 @@ import Codec.Serialise
 import Data.ByteString (ByteString)
 import Data.Hashable
 import GHC.Generics
+import Optics.TH
 
 data PathOrigin = PathOrigin
   { attr :: {-# UNPACK #-} ByteString,
@@ -23,3 +25,6 @@ data StorePath = StorePath
   }
   deriving stock (Show, Eq, Generic)
   deriving anyclass (Serialise, Hashable)
+
+makeFieldLabels ''PathOrigin
+makeFieldLabels ''StorePath
