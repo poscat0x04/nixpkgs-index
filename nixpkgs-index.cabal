@@ -70,11 +70,14 @@ library
     , string-interpolate
     , text
     , transformers
+    , unordered-containers
     , xeno
     , template-haskell
     , th-lift-instances
 
   exposed-modules:
+    Distribution.Nixpkgs.Files
+
   other-modules:
     Control.Effect.PooledConc
     Path
