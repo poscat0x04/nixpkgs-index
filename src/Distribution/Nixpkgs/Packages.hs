@@ -7,12 +7,16 @@ module Distribution.Nixpkgs.Packages where
 
 import Codec.Serialise
 import Data.ByteString (ByteString)
-import Data.Hashable
+import Data.Hashable (Hashable)
+import Data.Void
 import GHC.Generics
 import Optics.TH
+import Text.Megaparsec
+
+type Parser = Parsec Void ByteString
 
 data PathOrigin = PathOrigin
-  { attr :: {-# UNPACK #-} ByteString,
+  { attr :: ByteString,
     output :: {-# UNPACK #-} ByteString
   }
   deriving stock (Show, Eq, Generic)
@@ -25,6 +29,17 @@ data StorePath = StorePath
   }
   deriving stock (Show, Eq, Generic)
   deriving anyclass (Serialise, Hashable)
+
+storePath :: PathOrigin -> Parser StorePath
+storePath origin = do
+  _ <- chunk "/nix/store/"
+  hash <- takeWhile1P (Just "hash") (/= 45)
+  _ <- single 45
+  name <- takeRest
+  pure StorePath {..}
+
+parseStorePath :: PathOrigin -> ByteString -> Maybe StorePath
+parseStorePath origin = parseMaybe (storePath origin)
 
 makeFieldLabels ''PathOrigin
 makeFieldLabels ''StorePath

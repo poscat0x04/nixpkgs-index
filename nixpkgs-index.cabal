@@ -80,6 +80,7 @@ library
     Distribution.Nixpkgs.Hydra
     Distribution.Nixpkgs.Packages
     Distribution.Nixpkgs.Files
+    Distribution.Nixpkgs.NixEnv
 
   other-modules:
     Control.Effect.PooledConc
