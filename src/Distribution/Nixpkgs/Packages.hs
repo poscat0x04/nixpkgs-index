@@ -3,7 +3,12 @@
 {-# LANGUAGE StrictData #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Distribution.Nixpkgs.Packages where
+module Distribution.Nixpkgs.Packages
+  ( PathOrigin (..),
+    StorePath (..),
+    parseStorePath,
+  )
+where
 
 import Codec.Serialise
 import Data.ByteString (ByteString)
