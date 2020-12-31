@@ -7,10 +7,13 @@
 module Distribution.Nixpkgs.Files where
 
 import Codec.Serialise
+import Control.Monad
 import Data.Aeson
 import Data.Bifunctor
 import Data.HashMap.Strict (HashMap)
 import qualified Data.HashMap.Strict as HM
+import Data.Hashable (hash)
+import Data.IntSet (IntSet, insert, member)
 import Data.Maybe
 import Data.String.Interpolate
 import Data.Text (Text)
@@ -94,13 +97,18 @@ resolveSymlink :: [FileTreeEntry] -> [FileTreeEntry]
 resolveSymlink entries = map resolve entries
   where
     index = HM.fromList $ zip (map path entries) entries
-    lkup p = do
+    lkup :: Path 'Rel -> Maybe FileTreeEntry
+    lkup = lkup' mempty
+    lkup' :: IntSet -> Path 'Rel -> Maybe FileTreeEntry
+    lkup' s p = do
+      let h = hash p
+      guard $ not $ h `member` s
       e@FileTreeEntry {..} <- HM.lookup p index
       case node of
         Symlink {..} -> do
           p' <- parseRel targetPath
           let newPath = parent path </> p'
-          lkup newPath
+          lkup' (insert h s) newPath
         ResolvedSymlink {..} -> pure targetFile
         _ -> pure e
     resolve e@FileTreeEntry {..}
