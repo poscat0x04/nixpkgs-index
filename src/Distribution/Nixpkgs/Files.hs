@@ -21,18 +21,24 @@ import GHC.Generics
 import Optics.TH
 import Path
 
+-- | A polymorphic file node that can be used to represent both a file and
+-- a file tree.
 data FileNode t
-  = Regular
+  = -- | A regular file
+    Regular
       { size :: {-# UNPACK #-} Int,
         executable :: Bool
       }
-  | Symlink
+  | -- | A symboli link that hasn't been resolved or cannot be resolved for some reason
+    Symlink
       { targetPath :: {-# UNPACK #-} Text
       }
-  | ResolvedSymlink
+  | -- | A resolved symbolic link
+    ResolvedSymlink
       { targetFile :: {-# UNPACK #-} FileTreeEntry
       }
-  | Directory
+  | -- | A directory
+    Directory
       { contents :: t
       }
   deriving (Show, Eq, Generic)
@@ -93,6 +99,8 @@ toList' path (FileTree n)
         es = concatMap (uncurry toList' . first (path </>)) l
      in FileTreeEntry {node = Directory (), ..} : es
 
+-- | Recursively try to resolve all symbolic links in a tarball
+-- (represented as a list of 'FileTreeEntry')
 resolveSymlink :: [FileTreeEntry] -> [FileTreeEntry]
 resolveSymlink entries = map resolve entries
   where
