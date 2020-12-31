@@ -34,7 +34,7 @@ import Data.Foldable
 import Data.Hashable
 import Data.Maybe
 import Data.Sequence
-import Data.Text (Text, pack)
+import Data.Text (Text, pack, unpack)
 import Data.Void
 import GHC.Generics (Generic)
 import Instances.TH.Lift ()
@@ -48,8 +48,12 @@ type Parser = Parsec Void Text
 data PathSeg
   = Parent
   | PathSeg {-# UNPACK #-} !Text
-  deriving (Show, Eq, Lift, Generic)
+  deriving (Eq, Lift, Generic)
   deriving anyclass (Serialise, Hashable)
+
+instance Show PathSeg where
+  show Parent = ".."
+  show (PathSeg t) = unpack t
 
 fromPathSeg :: PathSeg -> Text
 fromPathSeg Parent = ".."
@@ -92,7 +96,7 @@ newtype Path (t :: PathType) = Path
   { unPath :: Seq PathSeg
   }
   deriving stock (Generic, Lift)
-  deriving newtype (Eq, Show)
+  deriving newtype (Eq)
   deriving anyclass (Serialise)
 
 instance Hashable (Path t) where
@@ -121,6 +125,12 @@ instance FromJSON (Path 'Abs) where
 
 instance FromJSONKey (Path 'Abs) where
   fromJSONKey = FromJSONKeyTextParser absParser
+
+instance Show (Path 'Abs) where
+  show = unpack . fromAbs
+
+instance Show (Path 'Rel) where
+  show = unpack . fromRel
 
 fromRel :: Path 'Rel -> Text
 fromRel (fmap fromPathSeg . unPath -> l)
