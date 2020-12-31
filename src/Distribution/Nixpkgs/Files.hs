@@ -94,14 +94,23 @@ resolveSymlink :: [FileTreeEntry] -> [FileTreeEntry]
 resolveSymlink entries = map resolve entries
   where
     index = HM.fromList $ zip (map path entries) entries
+    lkup p = do
+      e@FileTreeEntry {..} <- HM.lookup p index
+      case node of
+        Symlink {..} -> do
+          p' <- parseRel targetPath
+          let newPath = parent path </> p'
+          lkup newPath
+        ResolvedSymlink {..} -> pure targetFile
+        _ -> pure e
     resolve e@FileTreeEntry {..}
       | Symlink {..} <- node,
         path /= [relp|.|] =
-        case parseRel targetPath of
-          Nothing -> e
-          Just p ->
-            let targetPath' = parent path </> p
-             in fromMaybe e $ HM.lookup targetPath' index
+        fromMaybe e $ do
+          p <- parseRel targetPath
+          let newPath = parent path </> p
+          targetFile <- lkup newPath
+          pure $ FileTreeEntry path ResolvedSymlink {..}
       | otherwise = e
 
 makeFieldLabels ''FileNode
