@@ -21,7 +21,7 @@ import Path
 data FileNode t
   = Regular
       { size :: {-# UNPACK #-} Int,
-        executable :: {-# UNPACK #-} Bool
+        executable :: Bool
       }
   | Symlink
       { targetPath :: {-# UNPACK #-} Text
@@ -30,14 +30,14 @@ data FileNode t
       { targetFile :: {-# UNPACK #-} FileTreeEntry
       }
   | Directory
-      { contents :: {-# UNPACK #-} t
+      { contents :: t
       }
   deriving (Show, Eq, Generic)
   deriving (Serialise)
 
 data FileTreeEntry = FileTreeEntry
-  { path :: {-# UNPACK #-} Path 'Rel,
-    node :: {-# UNPACK #-} FileNode ()
+  { path :: Path 'Rel,
+    node :: FileNode ()
   }
   deriving (Show, Eq, Generic)
   deriving (Serialise)
