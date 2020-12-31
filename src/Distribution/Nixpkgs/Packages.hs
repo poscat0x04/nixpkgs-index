@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE StrictData #-}
 {-# LANGUAGE TemplateHaskell #-}
 
@@ -13,6 +14,7 @@ where
 import Codec.Serialise
 import Data.ByteString (ByteString)
 import Data.Hashable (Hashable)
+import Data.String.Interpolate
 import Data.Void
 import GHC.Generics
 import Optics.TH
@@ -21,11 +23,14 @@ import Text.Megaparsec
 type Parser = Parsec Void ByteString
 
 data PathOrigin = PathOrigin
-  { attr :: ByteString,
+  { attr :: {-# UNPACK #-} ByteString,
     output :: {-# UNPACK #-} ByteString
   }
-  deriving stock (Show, Eq, Generic)
+  deriving stock (Eq, Generic)
   deriving anyclass (Serialise, Hashable)
+
+instance Show PathOrigin where
+  show PathOrigin {..} = [i|#{attr}.#{output}|]
 
 data StorePath = StorePath
   { hash :: {-# UNPACK #-} ByteString,
